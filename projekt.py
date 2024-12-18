@@ -1,5 +1,12 @@
 import pandas as pd
-#priprava dat pro linearni regresi
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+import joblib
+import numpy as np
+from datetime import timedelta
+
 # Načtení dat z Excel souboru
 df = pd.read_csv(r'C:\Users\kater\Desktop\gold_prices.csv')
   # Zde změňte cestu k vašemu souboru
@@ -36,7 +43,6 @@ y = df['Close']
 print(X.head())
 print(y.head())
 
-from sklearn.model_selection import train_test_split
 
 # Rozdělení dat na trénovací a testovací sadu (80% trénování, 20% testování)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
@@ -45,8 +51,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle
 print(f"Trénovací sada: {X_train.shape[0]} řádků")
 print(f"Testovací sada: {X_test.shape[0]} řádků")
 
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
+
 
 # Vytvoření instance modelu
 model = LinearRegression()
@@ -65,7 +70,6 @@ print(f"Mean Squared Error (MSE): {mse}")
 print(f"R² Score: {r2}")
 
 
-import matplotlib.pyplot as plt
 
 # Scatter plot skutečných vs. předpovězených hodnot
 plt.scatter(y_test, y_pred, alpha=0.5)
@@ -82,7 +86,7 @@ plt.ylabel("Frekvence")
 plt.title("Histogram chyb")
 plt.show()
 
-import joblib
+
 
 # Uložení modelu do souboru
 joblib.dump(model, 'linear_regression_gold_model.pkl')
@@ -107,9 +111,6 @@ new_data = pd.DataFrame({
 new_prediction = model.predict(new_data)
 print(f"Předpovězená cena zlata: {new_prediction[0]}")
 
-import pandas as pd
-import numpy as np
-from datetime import timedelta
 
 # Výchozí bod: poslední známá data z testovací sady
 last_known_data = X_test.iloc[-1].copy()
@@ -136,7 +137,6 @@ last_date = X_test.index[-1]
 future_dates = [last_date + timedelta(days=i) for i in range(1, future_days + 1)]
 future_df = pd.DataFrame({'Date': future_dates, 'Predicted_Close': future_predictions})
 future_df.set_index('Date', inplace=True)
-import matplotlib.pyplot as plt
 
 # Spojení skutečných hodnot s budoucími predikcemi
 all_data = pd.concat([df[['Close']], future_df.rename(columns={'Predicted_Close': 'Close'})])
